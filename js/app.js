@@ -20,7 +20,7 @@ $(function() {
             part: "snippet",
             type: "video",
             q: encodeURIComponent($("#search").val()).replace(/%20/g, "+"),
-            maxResults: 6
+            maxResults: 15
        }); 
        // execute the request
        request.execute( function(response) {
@@ -58,9 +58,9 @@ $(function() {
 
 
 
-$("#sortByTitle").click(function()
+$("#sortByTitle").on( 'click', function()
 {
-  request.execute( function(response) {
+  request.execute( async function(response) {
           var results = response.result;
           $("#results").html("");
           var resultArr = [];
@@ -92,17 +92,18 @@ $("#sortByTitle").click(function()
           });
 
           console.log ( resultArr ) ;
+          var data;
+          await $.get("tpl/item.html",  function(res) {
+            data = res;
+          });
 
           $.each(resultArr, function(index, item) {
-            $.get("tpl/item.html", function(data) {
-        $("#results").append( tplawesome(data, [ { 
+          $("#results").append( tplawesome(data, [ { 
                                "title":item.title, 
                                "videoid":item.videoId , 
-                               "date":item.date.substring(0,10) }]
+                               "date":item.date }]
                         )
                   );
-
-            });
             console.log(item.title);
           });
           resetVideoHeight();
@@ -111,8 +112,8 @@ $("#sortByTitle").click(function()
 });
 
 
-$("#sortByDate").click(function(){
-  request.execute( function(response) {
+$("#sortByDate").on( 'click',  function(){
+  request.execute( async function(response) {
           var results = response.result;
           $("#results").html("");
           var resultArr2 = [];
@@ -143,16 +144,20 @@ $("#sortByDate").click(function(){
           });
           //console.log ( resultArr2 ) ;
 
+          var data;
+          await $.get("tpl/item.html",  function(res) {
+            data = res;
+          });
+
           $.each(resultArr2, function(index, item) {
-            $.get("tpl/item.html", function(data) {
-        $("#results").append( tplawesome(data, [ { 
+            
+          $("#results").append( tplawesome(data, [ { 
                                "title":item.title, 
                                "videoid":item.videoId , 
-                               "date":item.date.substring(0,10) }]
+                               "date":item.date }]
                         )
                   );
             });
-          });
           resetVideoHeight();
        });
     
